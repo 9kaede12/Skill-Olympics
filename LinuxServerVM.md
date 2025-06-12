@@ -6,3 +6,5 @@
     sudo route add default gw 192.168.1.1
    </pre>
    ここで、eth0 はインターフェース名です。必要に応じて ifconfig や ip link で確認してください。
+1. 設定したIPアドレスの確認
+   <pre>ifconfig</pre>
