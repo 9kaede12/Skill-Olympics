@@ -40,3 +40,17 @@
 1. IPアドレスを設定できたか確認
    <pre>show interface ip brief</pre>
    `show int ip brief`で確認ができます。
+1. ICMPインジェクションを有効にする
+   <pre>
+   policy-map global_policy
+   class inspection_default
+   inspect icmp
+   </pre>
+1. 設定に確認
+   <pre>show run policy-map</pre>
+   以下のように出力されればOK
+   <pre>
+   policy-map global_policy
+   class inspection_default
+   inspect icmp
+   </pre>
