@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>技能五輪ITNW選考会 インタラクティブガイド</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: The application is designed as a task-oriented, non-linear Single Page Application (SPA). The main navigation divides content into logical sections for a competitor: '概要' (Overview), 'インフラ' (Infrastructure), 'ネットワーク課題' (Network Tasks), 'サーバー課題' (Server Tasks), and '戦略' (Strategy). This structure is chosen over the report's linear format to allow competitors to quickly access and study specific, complex topics relevant to their needs. For example, a user can directly jump to the BGP configuration details without navigating through introductory content. Interactive diagrams and collapsible sections are used to manage information density and highlight relationships between different technologies, fostering a deeper understanding of the integrated system. -->
+    <!-- Visualization & Content Choices: 
+        - Competition Timeline: Goal: Inform. Viz/Method: A clear, structured HTML/Tailwind timeline. Interaction: None. Justification: Provides a quick, easy-to-read schedule. Library/Method: HTML/Tailwind.
+        - Infrastructure Diagram: Goal: Organize/Inform. Viz/Method: A layered diagram using HTML/Tailwind to represent Physical, Virtual (ESXi/CML), and Logical connections. Interaction: JS-powered buttons to toggle visibility of different layers and their descriptions. Justification: Visually clarifies the complex, multi-layered environment which is fundamental to the competition. Library/Method: Vanilla JS.
+        - Task Accordions: Goal: Organize. Viz/Method: Collapsible sections for Network and Server tasks. Interaction: Click to expand/collapse detailed requirements. Justification: Breaks down the long list of technical requirements into manageable, hierarchical chunks, preventing information overload. Library/Method: Vanilla JS.
+        - Routing Protocols Chart: Goal: Compare. Viz/Method: A Chart.js Radar chart. Interaction: Hover tooltips provide key details for each protocol (BGP, EIGRP, OSPF). Justification: Offers a quick visual comparison of the core characteristics of the three main routing protocols used in the competition. Library/Method: Chart.js.
+        - Strategic Tips: Goal: Inform. Viz/Method: Card-based layout with icons. Interaction: None. Justification: Presents key advice in a visually engaging and easily digestible format. Library/Method: HTML/Tailwind with Unicode icons.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Noto Sans JP', sans-serif; background-color: #F8F9FA; }
+        .nav-button { transition: all 0.3s ease; }
+        .nav-button.active { background-color: #3B82F6; color: white; }
+        .nav-button:not(.active):hover { background-color: #E5E7EB; }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        .card { background-color: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); padding: 1.5rem; transition: transform 0.3s ease; }
+        .card:hover { transform: translateY(-5px); }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900">技能五輪全国大会 ITネットワークシステム管理 選考会</h1>
+            <p class="text-xl text-gray-600 mt-2">インタラクティブ・コンペティションガイド</p>
+        </header>
+
+        <nav class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8 bg-white p-3 rounded-xl shadow-md sticky top-4 z-10">
+            <button data-target="overview" class="nav-button active text-sm md:text-base font-semibold py-2 px-3 md:px-5 rounded-lg">概要</button>
+            <button data-target="infra" class="nav-button text-sm md:text-base font-semibold py-2 px-3 md:px-5 rounded-lg">インフラ</button>
+            <button data-target="network" class="nav-button text-sm md:text-base font-semibold py-2 px-3 md:px-5 rounded-lg">ネットワーク課題</button>
+            <button data-target="server" class="nav-button text-sm md:text-base font-semibold py-2 px-3 md:px-5 rounded-lg">サーバー課題</button>
+            <button data-target="strategy" class="nav-button text-sm md:text-base font-semibold py-2 px-3 md:px-5 rounded-lg">戦略</button>
+        </nav>
+
+        <main>
+            <section id="overview" class="content-section active">
+                <div class="card mb-6">
+                    <h2 class="text-2xl font-bold mb-4">ようこそ、挑戦者へ</h2>
+                    <p class="text-gray-700 leading-relaxed">このガイドは、「ITネットワークシステム管理」技能五輪選考会の複雑な課題を解き明かすためのインタラクティブなツールです。本競技は、ネットワーク、サーバー、セキュリティに関する広範な知識と、限られた時間内でシステムを構築・トラブルシューティングする実践的なスキルを総合的に評価します。単なる手順書ではなく、自らの判断で仕様を満たす能力が求められます。このガイドを活用し、各技術要素の関係性を理解し、効果的な準備を進めてください。</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="card">
+                        <h3 class="text-xl font-bold mb-4">競技の核心</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start"><span class="text-blue-500 mr-3 text-xl">⏱️</span><span><strong class="font-semibold">時間との戦い:</strong> 4時間という厳格な時間制限下でのパフォーマンス。</span></li>
+                            <li class="flex items-start"><span class="text-blue-500 mr-3 text-xl">🧠</span><span><strong class="font-semibold">統合的スキル:</strong> ルーティング、スイッチング、サーバー管理、セキュリティの連携。</span></li>
+                            <li class="flex items-start"><span class="text-blue-500 mr-3 text-xl">💡</span><span><strong class="font-semibold">問題解決能力:</strong> 「手順書ではない」課題に対し、自律的に仕様を解釈し、実装する力。</span></li>
+                            <li class="flex items-start"><span class="text-blue-500 mr-3 text-xl">🎯</span><span><strong class="font-semibold">部分点戦略:</strong> 完璧な構成が困難な場合、代替策で機能を確保し、得点を最大化する柔軟性。</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="text-xl font-bold mb-4">競技日程</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <p class="font-semibold text-gray-800">【前日】令和7年8月1日 (木)</p>
+                                <p class="text-gray-600 ml-4">13:30 - 15:00: 競技説明、機材確認</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800">【当日】令和7年8月2日 (金)</p>
+                                <p class="text-gray-600 ml-4">09:00 - 13:00 (4時間): 競技実施</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="infra" class="content-section">
+                <div class="card mb-6">
+                    <h2 class="text-2xl font-bold mb-4">競技インフラストラクチャ</h2>
+                    <p class="text-gray-700 leading-relaxed mb-4">本競技は、物理機器、仮想化プラットフォーム（VMware ESXi）、ネットワークシミュレータ（Cisco CML）が統合された複雑な環境で実施されます。各レイヤーの関係を理解することが、トラブルシューティングの第一歩となります。下のボタンをクリックして、各レイヤーの構成図と詳細を確認してください。</p>
+                    <div class="flex justify-center gap-4 mb-6">
+                        <button class="infra-toggle-btn bg-blue-500 text-white py-2 px-4 rounded-lg" data-infra="physical">物理構成</button>
+                        <button class="infra-toggle-btn bg-gray-200 text-gray-700 py-2 px-4 rounded-lg" data-infra="logical">論理構成</button>
+                        <button class="infra-toggle-btn bg-gray-200 text-gray-700 py-2 px-4 rounded-lg" data-infra="software">ソフトウェア</button>
+                    </div>
+
+                    <div id="physical-infra" class="infra-content">
+                        <h3 class="text-xl font-semibold mb-2 text-center">物理接続図</h3>
+                        <div class="p-4 border rounded-lg bg-gray-50 text-center">
+                            <p class="text-lg">管理用PC (Windows 10)</p>
+                            <p class="text-2xl my-2">↕️</p>
+                            <p class="text-lg">ハブ</p>
+                            <p class="text-2xl my-2">↕️</p>
+                            <p class="text-lg">仮想化ホスト (VMware ESXi)</p>
+                        </div>
+                        <div class="mt-4 text-gray-600">
+                            <p>選手は「管理用PC」から、仮想化ホスト上で動作する「CML」や「仮想マシン」にアクセスします。物理的な接続は非常にシンプルですが、この上で複雑な仮想環境が展開されます。</p>
+                            <ul class="list-disc list-inside mt-2">
+                                <li><strong>アクセス方法:</strong> 管理用PCからVMware Remote ConsoleとTeraTermを使用。</li>
+                                <li><strong>注意:</strong> ESXiやCMLの管理画面へのアクセスは<strong class="text-red-600">禁止</strong>されています。</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="logical-infra" class="infra-content hidden">
+                        <h3 class="text-xl font-semibold mb-2 text-center">論理接続イメージ</h3>
+                         <div class="p-4 border rounded-lg bg-gray-50">
+                            <div class="text-center font-semibold mb-2">管理用PC</div>
+                            <div class="flex justify-center"><div class="w-0.5 h-6 bg-gray-400"></div></div>
+                            <div class="text-center font-semibold mb-2">ESXi vSwitch</div>
+                            <div class="w-full h-0.5 bg-gray-400 my-2"></div>
+                            <div class="grid grid-cols-2 gap-4 text-center">
+                                <div>
+                                    <p class="font-semibold">CMLシミュレーション</p>
+                                    <div class="border border-dashed border-blue-400 p-2 rounded mt-1">
+                                        <p>hq1, hq2, cs1, cs2, br1...</p>
+                                        <p>(IOSv, IOSvL2, ASAv)</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="font-semibold">ESXi 仮想マシン</p>
+                                    <div class="border border-dashed border-green-400 p-2 rounded mt-1">
+                                        <p>hq-sv (Debian)</p>
+                                        <p>hq-cl (Debian)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-gray-600">
+                            <p>CML内の仮想ネットワークノード群と、ESXi上のサーバー/クライアント仮想マシンは、ESXiの仮想スイッチ(vSwitch)を介して相互に接続されます。競技開始時点で、これらの基本的な接続性は確保されています。</p>
+                        </div>
+                    </div>
+
+                    <div id="software-infra" class="infra-content hidden">
+                        <h3 class="text-xl font-semibold mb-2 text-center">主要ソフトウェア</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
+                            <div class="p-3 bg-gray-100 rounded-lg">
+                                <p class="font-bold">サーバーOS</p>
+                                <p>Debian 12.10</p>
+                            </div>
+                            <div class="p-3 bg-gray-100 rounded-lg">
+                                <p class="font-bold">クライアントOS</p>
+                                <p>Windows 10 / Debian 12.10</p>
+                            </div>
+                            <div class="p-3 bg-gray-100 rounded-lg">
+                                <p class="font-bold">仮想化</p>
+                                <p>VMware ESXi, CML 2.x</p>
+                            </div>
+                            <div class="p-3 bg-gray-100 rounded-lg">
+                                <p class="font-bold">ターミナル</p>
+                                <p>TeraTerm</p>
+                            </div>
+                            <div class="p-3 bg-gray-100 rounded-lg">
+                                <p class="font-bold">リモート</p>
+                                <p>VMware Remote Console</p>
+                            </div>
+                            <div class="p-3 bg-gray-100 rounded-lg">
+                                <p class="font-bold">ISOイメージ</p>
+                                <p>Debian 12.10 (提供)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="network" class="content-section">
+                <div class="card mb-6">
+                    <h2 class="text-2xl font-bold mb-4">ネットワーク設定課題</h2>
+                    <p class="text-gray-700 leading-relaxed">ネットワーク課題は、本競技の中核をなします。基本設定から、スイッチング、ルーティング、VPN、冗長化まで、多岐にわたる技術の正確な設定が求められます。設定項目は最適な順序で記載されていないため、依存関係を考慮し、自身で設定順序を計画する必要があります。</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="card accordion">
+                        <button class="w-full text-left font-bold text-xl flex justify-between items-center">
+                            <span>Layer 2: スイッチング & 冗長化</span>
+                            <span class="transform transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <ul class="list-disc list-inside mt-4 space-y-2 text-gray-700">
+                                <li><strong>VTP:</strong> モードを `Transparent` に設定 (cs1/cs2/es)。</li>
+                                <li><strong>VLAN:</strong> 指定されたVLAN IDと名前を設定。</li>
+                                <li><strong>Etherchannel:</strong> cs1-cs2間を静的Port-channel 1 (Gi0/2, Gi0/3)で構成。</li>
+                                <li><strong>Trunking:</strong> スイッチ間リンクを `IEEE802.1Q` トランクとして構成。</li>
+                                <li><strong>STP:</strong> `RSTP (802.1w)` を有効化。VLAN10はcs1、VLAN11はcs2をルートブリッジに設定。</li>
+                                <li><strong>HSRP:</strong> VLAN10/11でゲートウェイを冗長化。アクティブ/スタンバイ、仮想IP、Preemptionを設定。IPv6 HSRPも含む。</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="card accordion">
+                        <button class="w-full text-left font-bold text-xl flex justify-between items-center">
+                            <span>Layer 3: ルーティング (IPv4/IPv6)</span>
+                             <span class="transform transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                             <p class="mt-4">HeadQuarter拠点とBranch拠点を結ぶ複雑なルーティングポリシーを実装します。3つの主要なプロトコルが連携して動作します。</p>
+                            <div class="chart-container mt-4">
+                                <canvas id="routingProtocolChart"></canvas>
+                            </div>
+                             <ul class="list-disc list-inside mt-4 space-y-2 text-gray-700">
+                                <li><strong>BGP (AS300):</strong> インターネット(isp1/isp2)との接続。iBGP/eBGPピア確立、経路集約、`next-hop-self`、AS-PATHを利用した高度な経路制御とフェイルオーバー。</li>
+                                <li><strong>EIGRP (AS100):</strong> HeadQuarter拠点内のルーティング。名前付きモード、BGPからの経路再配布、メトリック調整による経路制御、`passive-interface`。IPv6 EIGRPも設定。</li>
+                                <li><strong>OSPF (Multi-Area):</strong> DMVPNを介した拠点間ルーティング。Area 0/1/2の設計、DR/BDR選出、EIGRPへの経路再配布、ABR/ASBRとしての経路集約。</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card accordion">
+                        <button class="w-full text-left font-bold text-xl flex justify-between items-center">
+                            <span>WAN & セキュリティ</span>
+                             <span class="transform transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                             <ul class="list-disc list-inside mt-4 space-y-2 text-gray-700">
+                                <li><strong>NAPT/PAT:</strong> hq1はIPプール、hq2はインターフェースアドレスを使用したアドレス変換を設定。</li>
+                                <li><strong>DMVPN:</strong> hq2をハブ、br1/br2をスポークとして構成。スポーク間ダイレクト通信、NHRP、IKEv2/IPsecによるセキュリティ確保。</li>
+                                <li><strong>基本設定:</strong> IPアドレス(IPv4/v6)、パスワード(暗号化)、SSHv2アクセス設定。</li>
+                             </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="server" class="content-section">
+                <div class="card mb-6">
+                    <h2 class="text-2xl font-bold mb-4">サーバー & クライアント設定課題</h2>
+                    <p class="text-gray-700 leading-relaxed">Debian Linuxサーバー (hq-sv) とクライアント (hq-cl) を設定し、ネットワーク上で必要なサービスを提供します。DNS、Web、LDAPサービスが相互に連携し、クライアントからのアクセスを可能にすることが目標です。</p>
+                </div>
+                
+                 <div class="space-y-4">
+                    <div class="card accordion">
+                        <button class="w-full text-left font-bold text-xl flex justify-between items-center">
+                            <span>hq-sv: Debian サーバー設定</span>
+                             <span class="transform transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                             <ul class="list-disc list-inside mt-4 space-y-2 text-gray-700">
+                                <li><strong>基本設定:</strong> 指定されたIPアドレス、ゲートウェイを設定。ネームサーバーは自身を参照。</li>
+                                <li><strong>DNS (bind9):</strong> `skills.local`ドメインのマスタサーバーとして動作。`www.skills.local`の正引き設定。不明なクエリは`isp2-ipv4sv`へフォワード。</li>
+                                <li><strong>Web (apache2):</strong> HTTPからHTTPSへのリダイレクト。`https://www.skills.local`へのアクセスに応答。</li>
+                                <li><strong>LDAP (slapd):</strong> 管理者パスワード設定。ユーザー`ouser01`をパスワード`oPass2025`で登録。</li>
+                                 <li><strong>連携:</strong> Apacheの`/auth/`ディレクトリへのアクセスをLDAP認証で保護。</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="card accordion">
+                        <button class="w-full text-left font-bold text-xl flex justify-between items-center">
+                            <span>hq-cl: Debian クライアント設定</span>
+                             <span class="transform transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                             <ul class="list-disc list-inside mt-4 space-y-2 text-gray-700">
+                                <li><strong>基本設定:</strong> 指定されたIPアドレスを設定。ネームサーバーとして`hq-sv`を参照。</li>
+                                <li><strong>ユーザー認証:</strong> LDAPユーザー `ouser01` でログインした状態にすること。（ローカルユーザーは作成しない）</li>
+                                <li><strong>動作確認:</strong> Firefoxで`https://www.skills.local`に証明書エラーなくアクセス。`https://www.itnetsys.org`にもアクセスできることを確認。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="strategy" class="content-section">
+                 <div class="card mb-6">
+                    <h2 class="text-2xl font-bold mb-4">成功への戦略</h2>
+                    <p class="text-gray-700 leading-relaxed">この競技では、技術力だけでなく、戦略的な思考が勝敗を分けます。限られた時間の中で最大の成果を出すための重要な考え方をここで確認しましょう。</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="card">
+                        <h3 class="text-xl font-bold mb-3 flex items-center"><span class="text-2xl mr-2">⏱️</span>時間管理</h3>
+                        <p>4時間は有限です。一つの問題に固執せず、タスクの優先順位を決めましょう。難しい設定は後回しにし、まず確実に得点できる部分から着手するのが賢明です。</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="text-xl font-bold mb-3 flex items-center"><span class="text-2xl mr-2">🎯</span>「部分点」の活用</h3>
+                        <p class="text-red-600 font-semibold">最重要戦略です。</p>
+                        <p>例えばDMVPNが困難でも、簡単なGREトンネルで拠点間を接続できれば、その上で動くOSPFの課題は採点対象になります。完璧を目指すより、まず「動く」ことを目指しましょう。</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="text-xl font-bold mb-3 flex items-center"><span class="text-2xl mr-2">🔍</span>体系的トラブルシューティング</h3>
+                        <p>問題が発生したら、レイヤーを意識して切り分けましょう。Pingは通るか？(L3) DNSは引けるか？(L7) Firewalldは？一つずつ、段階的に検証する癖をつけましょう。</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const navButtons = document.querySelectorAll('.nav-button');
+        const contentSections = document.querySelectorAll('.content-section');
+        const accordions = document.querySelectorAll('.accordion');
+        const infraToggles = document.querySelectorAll('.infra-toggle-btn');
+        const infraContents = document.querySelectorAll('.infra-content');
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetId = button.dataset.target;
+
+                navButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                contentSections.forEach(section => {
+                    section.classList.toggle('active', section.id === targetId);
+                });
+                
+                if (targetId === 'network') {
+                    renderRoutingChart();
+                }
+            });
+        });
+        
+        accordions.forEach(accordion => {
+            const button = accordion.querySelector('button');
+            const content = accordion.querySelector('.accordion-content');
+            const icon = button.querySelector('span:last-child');
+            
+            button.addEventListener('click', () => {
+                const isExpanded = content.style.maxHeight && content.style.maxHeight !== '0px';
+                if (isExpanded) {
+                    content.style.maxHeight = '0px';
+                    icon.style.transform = 'rotate(0deg)';
+                } else {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    icon.style.transform = 'rotate(180deg)';
+                }
+            });
+        });
+
+        infraToggles.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetId = button.dataset.infra + '-infra';
+                
+                infraToggles.forEach(btn => {
+                    btn.classList.remove('bg-blue-500', 'text-white');
+                    btn.classList.add('bg-gray-200', 'text-gray-700');
+                });
+
+                button.classList.add('bg-blue-500', 'text-white');
+                button.classList.remove('bg-gray-200', 'text-gray-700');
+
+                infraContents.forEach(content => {
+                    content.classList.toggle('hidden', content.id !== targetId);
+                });
+            });
+        });
+
+        let routingChart = null;
+        function renderRoutingChart() {
+            if (routingChart) {
+                return;
+            }
+            const ctx = document.getElementById('routingProtocolChart').getContext('2d');
+            routingChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['範囲', '複雑性', '経路制御', '再配布', '用途'],
+                    datasets: [{
+                        label: 'BGP',
+                        data: [5, 5, 5, 3, 5],
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    }, {
+                        label: 'EIGRP',
+                        data: [3, 3, 4, 5, 3],
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    }, {
+                        label: 'OSPF',
+                        data: [4, 4, 3, 4, 4],
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '主要ルーティングプロトコル特性比較',
+                            font: { size: 16 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    const value = context.raw;
+                                    const characteristic = context.chart.data.labels[context.dataIndex];
+                                    let desc = '';
+                                    if (label === 'BGP: ') {
+                                        if(characteristic === '用途') desc = 'インターネット接続';
+                                    } else if (label === 'EIGRP: ') {
+                                        if(characteristic === '用途') desc = 'HQ内ルーティング';
+                                    } else if (label === 'OSPF: ') {
+                                        if(characteristic === '用途') desc = '拠点間(DMVPN上)';
+                                    }
+                                    return `${characteristic} (${desc || '相対評価:' + value})`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: { display: true },
+                            suggestedMin: 0,
+                            suggestedMax: 5,
+                             pointLabels: {
+                                font: {
+                                    size: 14
+                                }
+                            },
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+</body>
+</html>
