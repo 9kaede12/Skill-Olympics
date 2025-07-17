@@ -77,3 +77,34 @@
       <pre>show interfaces g0/0 switchport</pre>
       
 </details>
+
+## Etherchannelを動作させる方法
+<details>
+   <summary>クリックで展開</summary>
+
+   1. 特権モードに移行
+      <pre>enable</pre>
+      `en` と入力しても特権モードに移行することができます。
+   1. グローバルコンフィグレーションモードに移行
+      <pre>configure terminal</pre>
+      `conf t`と入力してもグローバルコンフィグレーションモードに移行することができます。
+   1. 設定したいインターフェースへ移行
+      <pre>interface g0/0</pre>
+   1. トランクリンクで使用するカプセル化プロトコルを指定する
+      <pre>switchport trunk encapsulation dot1q</pre>
+   1. 指定したポートをトランクモードとして動作させる
+      <pre>switchport mode trunk</pre>
+   1. インターフェースを Port-channel 1 に静的に所属させる
+      <pre>channel-group 1 mode on</pre>
+   1. インターフェースを有効化
+      <pre>no shutdown</pre>
+   1. 特権モードに移行
+      <pre>end</pre>
+   1. 設定が正しく適用されたかを確認する
+      <pre>
+      show etherchannel summary
+      show interfaces Port-channel1 switchport
+      show interfaces GigabitEthernet0/2 etherchannel
+      show interfaces GigabitEthernet0/3 etherchannel
+      </pre>
+</details>
