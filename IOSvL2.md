@@ -108,3 +108,39 @@
       show interfaces GigabitEthernet0/3 etherchannel
       </pre>
 </details>
+
+## STPを動作させる方法（RSTP (IEEE802.1w)）
+<details>
+   <summary>クリックで展開</summary>
+
+   1. 特権モードに移行
+      <pre>enable</pre>
+      `en` と入力しても特権モードに移行することができます。
+   1. グローバルコンフィグレーションモードに移行
+      <pre>configure terminal</pre>
+      `conf t`と入力してもグローバルコンフィグレーションモードに移行することができます。
+   1. スイッチングモードを Rapid PVST+ (Rapid Per-VLAN Spanning Tree Plus) に設定
+      <pre>spanning-tree mode rapid-pvst</pre>
+
+   ### ルートブリッジの設定
+   1. 特権モードに移行
+      <pre>enable</pre>
+      `en` と入力しても特権モードに移行することができます。
+   1. グローバルコンフィグレーションモードに移行
+      <pre>configure terminal</pre>
+      `conf t`と入力してもグローバルコンフィグレーションモードに移行することができます。
+   1. STP プライオリティを 4096 に設定
+      <pre>spanning-tree vlan 10 priority 4096</pre>
+      これは可能な最低値の一つであり、このVLANのルートブリッジになることを強く推奨します。
+
+   ### セカンダリルートブリッジの設定
+   1. 特権モードに移行
+      <pre>enable</pre>
+      `en` と入力しても特権モードに移行することができます。
+   1. グローバルコンフィグレーションモードに移行
+      <pre>configure terminal</pre>
+      `conf t`と入力してもグローバルコンフィグレーションモードに移行することができます。
+   1. STP プライオリティを 8192 に設定
+      <pre>spanning-tree vlan 11 priority 8192</pre>
+      これは cs2 のデフォルトプライオリティ 32768 より低く、かつ cs2 が VLAN 11 のルートブリッジとなるように設定する値（通常は 4096）より高く設定することで、セカンダリルートブリッジとしての役割を果たします。
+</details>
