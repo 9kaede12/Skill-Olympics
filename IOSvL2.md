@@ -147,7 +147,7 @@
 
 ## HSRPを設定する方法
 <details>
-   <summar>クリックで展開</summar>
+   <summary>クリックで展開</summary>
 
    1. 特権モードに移行
       <pre>enable</pre>
@@ -183,4 +183,50 @@
    1. 切り戻しの設定
       <pre>standby 10 preempt</pre>
       `アクティブ` がダウンして `スタンバイ` がアクティブになった後、 `元アクティブ` が復旧してより高いプライオリティでオンラインになった際に、`元アクティブ` にアクティブの役割を切り戻させるために必要です。
+</details>
+
+## EtherChannelの設定手順
+<details>
+   <summary>クリックで展開</summary>
+
+   1. 特権モードに移行
+      <pre>enable</pre>
+      `en` と入力しても特権モードに移行することができます。
+   1. グローバルコンフィグレーションモードに移行
+      <pre>configure terminal</pre>
+      `conf t`と入力してもグローバルコンフィグレーションモードに移行することができます。
+   1. インターフェースを指定
+      例：g0/2 を指定する場合
+      <pre>interface g0/2</pre>
+   1. トランクリンクで使用するカプセル化プロトコルを dot1q (IEEE 802.1Q) に明示的に設定
+      <pre>switchport trunk encapsulation dot1q</pre>
+      このコマンドは、`switchport mode trunk` コマンドを実行する前に必要です。
+   1. 物理インターフェースをトランクモードとして動作させる
+      <pre>switchport mode trunk</pre>
+      これにより、複数のVLANのトラフィックがこのリンクを通過できるようになります。
+   1. インターフェースを Port-channel 1 という論理グループに静的に所属させる
+      <pre>channel-group 1 mode on</pre>
+      mode on はネゴシエーションプロトコル（LACPやPAgP）を使用しないことを意味します。
+   1. インターフェースを有効化
+      <pre>no shutdown</pre>
+
+   ### 論理インターフェース (Port-channel) の設定
+   1. 論理インターフェースである Port-channel 1 のコンフィギュレーションモードに入る
+      <pre>interface Port-channel1</pre>
+   1. トランクリンクで使用するカプセル化プロトコルを dot1q (IEEE 802.1Q) に明示的に設定
+      <pre>switchport trunk encapsulation dot1q</pre>
+      このコマンドは、`switchport mode trunk` コマンドを実行する前に必要です。
+   1. 物理インターフェースをトランクモードとして動作させる
+      <pre>switchport mode trunk</pre>
+      これにより、複数のVLANのトラフィックがこのリンクを通過できるようになります。
+   1. インターフェースを有効化
+      <pre>no shutdown</pre>
+
+   ### 設定の確認
+   1. EtherChannel の状態の概要を確認
+      <pre>show etherchannel summary</pre>
+      `Port-channel1` が「SU (Layer2, Up)」の状態になっていることを確認
+   1. `Port-channel1` が `Operational Mode: trunk` になっていることを確認します。
+      <pre>show interfaces Port-channel1 switchport</pre>
+      また、「Trunking VLANs Enabled: ALL」または許可したいVLANがリストに含まれているか確認してください。
 </details>
