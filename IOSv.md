@@ -149,3 +149,30 @@
       </details>
             
 </details>
+
+# loopbackアドレスの設定
+<details>
+   <summary>設定手順</summary>
+
+   1. loopback0 に設定するとき
+      <pre>
+      interface <インターフェース名>
+       ip address <プライマリIPアドレス> <サブネットマスク>
+      </pre>
+   1. セカンダリアドレスを設定するとき
+      <pre>
+      interface <インターフェース名>
+       ip address <セカンダリIPアドレス> <サブネットマスク> secondary
+      </pre>
+</details>
+
+# サブインターフェースにIPアドレスを設定する
+<details>
+   <summary>設定手順</summary>
+
+   <pre>
+   interface GigabitEthernet0/2.98
+    encapsulation dot1Q 98
+    ip address 172.17.0.22 255.255.255.252
+   </pre>
+</details>
