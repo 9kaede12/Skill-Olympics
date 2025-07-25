@@ -19,9 +19,6 @@ router eigrp A2024
     af-interface Vlan11
       passive-interface
     exit-af-interface
-    af-interface Vlan100
-      passive-interface
-    exit-af-interface
   exit-address-family
 exit
 !
