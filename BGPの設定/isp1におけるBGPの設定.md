@@ -22,7 +22,7 @@ router bgp 100
   !
   ! eBGPピア設定
   neighbor 100.99.2.2 remote-as 300   ! hq1 (AS300)
-  neighbor 100.99.2.6 remote-as 400   ! isp3 (AS400)
+  neighbor 100.99.2.6 remote-as 130   ! isp3 (AS130)
   !
   ! BGPでアドバタイズするネットワーク
   network 100.99.1.0 mask 255.255.255.0
