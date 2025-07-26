@@ -17,10 +17,13 @@ router bgp 300
   network 200.200.200.22 mask 255.255.255.255
 
   ! 集約経路をsummary-onlyでアドバタイズ
+  ! aggregate-address は、BGPで複数のルートを集約（サマライズ）するためのコマンドです。
+  ! summary-only オプションを付けることで、集約後の経路のみをアドバタイズし、
+  ! 個別経路（more specific routes）は広告しないという動作になります。
   aggregate-address 100.100.100.0 255.255.255.224 summary-only
   aggregate-address 200.200.200.0 255.255.255.224 summary-only
 
-  ! hq1とのiBGPピア設定（Loopbackアドレスを使用）
+  ! hq1とのiBGPピア設定（Loopback0のプライマリアドレスを使用）
   neighbor 100.100.100.11 remote-as 300
   neighbor 100.100.100.11 update-source Loopback0
   neighbor 100.100.100.11 next-hop-self
