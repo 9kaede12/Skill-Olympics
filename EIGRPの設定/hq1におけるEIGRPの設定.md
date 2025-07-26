@@ -54,6 +54,7 @@ route-map BGP_TO_EIGRP_HQ1 permit 20
 exit
 !
 ! 200.99.0.0/16 は再配布禁止
+! cs1とcs2は200.99.0.0/16の経路を**hq2からのみ**学習することになります。
 route-map BGP_TO_EIGRP_HQ1 deny 30
   match ip address prefix-list PREFIX_200_99_0_16
 exit
