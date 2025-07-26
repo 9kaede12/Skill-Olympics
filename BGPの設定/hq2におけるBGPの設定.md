@@ -42,6 +42,7 @@ ip as-path access-list 1 permit _300$
 route-map PREPEND_100_TO_ISP2 permit 10
   match ip address prefix-list PREFIX_100_100_100_27
   set as-path prepend 300 300 300
+  exit
 !
 ! プレフィックスリスト定義
 ip prefix-list PREFIX_100_100_100_27 seq 5 permit 100.100.100.0/27
