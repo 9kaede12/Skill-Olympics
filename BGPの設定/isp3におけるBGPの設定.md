@@ -17,16 +17,21 @@ interface GigabitEthernet0/2
  no shutdown
 exit
 !
-! BGP設定開始（AS番号400）
-router bgp 400
+! BGP設定開始（AS番号130）
+router bgp 130
   !
   ! eBGPピア設定
   neighbor 100.99.2.5 remote-as 100   ! isp1 (AS100)
   neighbor 200.99.2.5 remote-as 200   ! isp2 (AS200)
   !
   ! BGPでアドバタイズするネットワーク
+  ! isp3ルータのGigabitEthernet0/0インターフェースに割り当てられているIPアドレス130.130.130.254/24のネットワークアドレスです。
   network 130.130.130.0 mask 255.255.255.0
+
+  ! isp3ルータのGigabitEthernet0/1インターフェースに割り当てられているIPアドレス100.99.2.6/30のネットワークアドレスです。
   network 100.99.2.4 mask 255.255.255.252
+
+  ! isp3ルータのGigabitEthernet0/2インターフェースに割り当てられているIPアドレス200.99.2.6/30のネットワークアドレスです。
   network 200.99.2.4 mask 255.255.255.252
 exit
 !
