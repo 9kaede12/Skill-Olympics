@@ -22,7 +22,7 @@ router bgp 200
   !
   ! eBGPピア設定
   neighbor 200.99.2.2 remote-as 300   ! hq2 (AS300)
-  neighbor 200.99.2.6 remote-as 400   ! isp3 (AS400)
+  neighbor 200.99.2.6 remote-as 130   ! isp3 (AS130)
   !
   ! BGPでアドバタイズするネットワーク
   ! isp2ルータのGigabitEthernet0/1インターフェースに割り当てられているIPアドレス200.99.1.254/24 のネットワークアドレスです。
